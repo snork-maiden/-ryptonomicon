@@ -7,17 +7,15 @@ export default {
       tickers: [],
       sel: null,
       graph: [],
-      isAlreadyAdd: false
+      isAlreadyAdd: false,
+      coinsList: [],
+      clues: []
     }
   },
-  computed: {},
   methods: {
-    add() {
-      this.ticker = this.ticker.toUpperCase();
-      if (this.tickers.find(item => item.name === this.ticker)) {
-        console.log('q')
-
-        this.isAlreadyAdd = true;
+    addTicker() {
+      if (this.tickers.find((item) => item.name === this.ticker)) {
+        this.isAlreadyAdd = true
         return
       }
       const currentTicker = {
@@ -40,6 +38,34 @@ export default {
       }, 5000)
       this.ticker = ''
     },
+    changeText() {
+      this.clues = []
+      this.ticker = this.ticker.toUpperCase();
+      if (this.ticker.length < 2) return;
+      const ticker = this.ticker;
+      this.coinsList.forEach((item) => {
+        if (item?.symbol.startsWith(ticker)) {
+          this.clues.push(item?.symbol)
+          return
+        }
+        if (item?.fullName.startsWith(ticker)) {
+          this.clues.push(item?.symbol)
+          return
+        }
+      })
+      this.clues.sort()
+      if (this.clues.length > 4) {
+        this.clues.length = 4
+      }
+      return
+    },
+
+    choseClue(ticker) {
+      this.clues = []
+      this.ticker = ticker
+      this.addTicker()
+    },
+
     select(ticker) {
       this.sel = ticker
       this.graph = []
@@ -51,14 +77,32 @@ export default {
       const maxValue = Math.max(...this.graph)
       const minValue = Math.min(...this.graph)
       return this.graph.map((price) => 5 + ((price - minValue) * 95) / (maxValue - minValue))
+    },
+    async getCoinsList() {
+      let response = await fetch('https://min-api.cryptocompare.com/data/all/coinlist?summary=true')
+
+      if (response.ok) {
+        const responseJSON = await response.json()
+        const data = await responseJSON.Data
+        for (const key in data) {
+          const coin = { symbol: data[key]?.Symbol, fullName: data[key]?.FullName }
+          this.coinsList.push(coin)
+        }
+      } else {
+        alert('HTTP error: ' + response.status)
+      }
     }
+  },
+  mounted() {
+    this.getCoinsList()
   }
 }
 </script>
 
 <template>
-  <div class="container mx-auto flex flex-col items-center bg-gray-100 p-4">
-    <!-- <div
+  <div class="container mx-auto flex flex-col items-center p-4">
+    <div
+      v-if="!coinsList.length"
       class="fixed w-100 h-100 opacity-80 bg-purple-800 inset-0 z-50 flex items-center justify-center"
     >
       <svg
@@ -81,51 +125,42 @@ export default {
           d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
         ></path>
       </svg>
-    </div> -->
-
+    </div>
     <div class="container">
       <section>
         <div class="flex">
           <div class="max-w-xs">
-            <label for="wallet" class="block text-sm font-medium text-gray-700">Тикер</label>
+            <label for="wallet" class="block text-m font-medium text-gray-700 mb-3">Тикер</label>
             <div class="mt-1 relative rounded-md shadow-md">
               <input
                 v-model.trim="ticker"
-                @keydown.enter="add"
+                @input="changeText"
+                @keydown.enter="addTicker"
                 type="text"
                 name="wallet"
                 id="wallet"
-                class="block w-full pr-10 border-gray-300 text-gray-900 focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm rounded-md"
+                class="block w-full p-2 pr-10 border-gray-300 text-gray-900 focus:outline-none focus:ring focus:ring-blue-400 focus:border-gray-400 sm:text-sm rounded-md"
                 placeholder="Например, DOGE"
+                autocomplete="off"
               />
             </div>
-            <div class="flex bg-white shadow-md p-1 rounded-md flex-wrap">
-              <span
-                class="inline-flex items-center px-2 m-1 rounded-md text-xs font-medium bg-gray-300 text-gray-800 cursor-pointer"
-              >
-                BTC
-              </span>
-              <span
-                class="inline-flex items-center px-2 m-1 rounded-md text-xs font-medium bg-gray-300 text-gray-800 cursor-pointer"
-              >
-                DOGE
-              </span>
-              <span
-                class="inline-flex items-center px-2 m-1 rounded-md text-xs font-medium bg-gray-300 text-gray-800 cursor-pointer"
-              >
-                BCH
-              </span>
-              <span
-                class="inline-flex items-center px-2 m-1 rounded-md text-xs font-medium bg-gray-300 text-gray-800 cursor-pointer"
-              >
-                CHD
-              </span>
-            </div>
+            <template v-if="clues.length">
+              <div class="flex bg-white shadow-md p-1 rounded-md flex-wrap">
+                <span
+                  v-for="clue of clues"
+                  v-bind:key="clue"
+                  class="inline-flex items-center px-2 m-1 rounded-md text-xs font-medium bg-gray-300 text-gray-800 cursor-pointer"
+                  @click="choseClue(clue)"
+                >
+                  {{ clue }}
+                </span>
+              </div>
+            </template>
             <div class="text-sm text-red-600" v-if="isAlreadyAdd">Такой тикер уже добавлен</div>
           </div>
         </div>
         <button
-          @click="add"
+          @click="addTicker"
           type="button"
           class="my-4 inline-flex items-center py-2 px-4 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-full text-white bg-gray-600 hover:bg-gray-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
         >
