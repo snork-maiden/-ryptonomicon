@@ -1,25 +1,35 @@
 <script>
+import AddTicker from './AddTicker.vue'
+import LoaderSpinner from './LoaderSpinner.vue'
+
 export default {
   name: 'App',
+
+  components: {
+    AddTicker,
+    LoaderSpinner
+  },
   data() {
     return {
-      ticker: '',
+      // ticker: '',
       tickers: [],
-      sel: null,
+      selectedTickers: null,
       graph: [],
       isAlreadyAdd: false,
-      coinsList: [],
-      clues: []
+      coinsList: []
+      // clues: []
     }
   },
   methods: {
-    addTicker() {
-      if (this.tickers.find((item) => item.name === this.ticker)) {
+    addTicker(ticker) {
+      if (this.tickers.find((item) => item.name === ticker)) {
         this.isAlreadyAdd = true
         return
       }
+      this.isAlreadyAdd = false
+
       const currentTicker = {
-        name: this.ticker,
+        name: ticker,
         price: '-'
       }
       this.tickers.push(currentTicker)
@@ -32,38 +42,10 @@ export default {
         // currentTicker.price =  data.USD > 1 ? data.USD.toFixed(2) : data.USD.toPrecision(2);
         this.tickers.find((t) => t.name === currentTicker.name).price =
           data.USD > 1 ? data.USD.toFixed(2) : data.USD.toPrecision(2)
-        if (this.sel?.name === currentTicker.name) {
+        if (this.selectedTickers?.name === currentTicker.name) {
           this.graph.push(data.USD)
         }
       }, 5000)
-      this.ticker = ''
-    },
-    changeText() {
-      this.clues = []
-      this.ticker = this.ticker.toUpperCase();
-      if (this.ticker.length < 2) return;
-      const ticker = this.ticker;
-      this.coinsList.forEach((item) => {
-        if (item?.symbol.startsWith(ticker)) {
-          this.clues.push(item?.symbol)
-          return
-        }
-        if (item?.fullName.startsWith(ticker)) {
-          this.clues.push(item?.symbol)
-          return
-        }
-      })
-      this.clues.sort()
-      if (this.clues.length > 4) {
-        this.clues.length = 4
-      }
-      return
-    },
-
-    choseClue(ticker) {
-      this.clues = []
-      this.ticker = ticker
-      this.addTicker()
     },
 
     select(ticker) {
@@ -89,7 +71,7 @@ export default {
           this.coinsList.push(coin)
         }
       } else {
-        alert('HTTP error: ' + response.status)
+        console.error('HTTP error: ' + response.status)
       }
     }
   },
@@ -101,85 +83,9 @@ export default {
 
 <template>
   <div class="container mx-auto flex flex-col items-center p-4">
-    <div
-      v-if="!coinsList.length"
-      class="fixed w-100 h-100 opacity-80 bg-purple-800 inset-0 z-50 flex items-center justify-center"
-    >
-      <svg
-        class="animate-spin -ml-1 mr-3 h-12 w-12 text-white"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-      >
-        <circle
-          class="opacity-25"
-          cx="12"
-          cy="12"
-          r="10"
-          stroke="currentColor"
-          stroke-width="4"
-        ></circle>
-        <path
-          class="opacity-75"
-          fill="currentColor"
-          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-        ></path>
-      </svg>
-    </div>
+    <LoaderSpinner v-if="!coinsList.length" />
     <div class="container">
-      <section>
-        <div class="flex">
-          <div class="max-w-xs">
-            <label for="wallet" class="block text-m font-medium text-gray-700 mb-3">Тикер</label>
-            <div class="mt-1 relative rounded-md shadow-md">
-              <input
-                v-model.trim="ticker"
-                @input="changeText"
-                @keydown.enter="addTicker"
-                type="text"
-                name="wallet"
-                id="wallet"
-                class="block w-full p-2 pr-10 border-gray-300 text-gray-900 focus:outline-none focus:ring focus:ring-blue-400 focus:border-gray-400 sm:text-sm rounded-md"
-                placeholder="Например, DOGE"
-                autocomplete="off"
-              />
-            </div>
-            <template v-if="clues.length">
-              <div class="flex bg-white shadow-md p-1 rounded-md flex-wrap">
-                <span
-                  v-for="clue of clues"
-                  v-bind:key="clue"
-                  class="inline-flex items-center px-2 m-1 rounded-md text-xs font-medium bg-gray-300 text-gray-800 cursor-pointer"
-                  @click="choseClue(clue)"
-                >
-                  {{ clue }}
-                </span>
-              </div>
-            </template>
-            <div class="text-sm text-red-600" v-if="isAlreadyAdd">Такой тикер уже добавлен</div>
-          </div>
-        </div>
-        <button
-          @click="addTicker"
-          type="button"
-          class="my-4 inline-flex items-center py-2 px-4 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-full text-white bg-gray-600 hover:bg-gray-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-        >
-          <!-- Heroicon name: solid/mail -->
-          <svg
-            class="-ml-0.5 mr-2 h-6 w-6"
-            xmlns="http://www.w3.org/2000/svg"
-            width="30"
-            height="30"
-            viewBox="0 0 24 24"
-            fill="#ffffff"
-          >
-            <path
-              d="M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"
-            ></path>
-          </svg>
-          Добавить
-        </button>
-      </section>
+      <AddTicker @add-ticker="addTicker" :coins-list="coinsList" :is-already-add="isAlreadyAdd" />
       <template v-if="tickers.length">
         <hr class="w-full border-t border-gray-600 my-4" />
         <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
@@ -188,7 +94,7 @@ export default {
             :key="t.name"
             @click="select(t)"
             :class="{
-              'border-4': sel === t
+              'border-4': selectedTickers === t
             }"
             class="bg-white overflow-hidden shadow rounded-lg border-purple-800 border-solid cursor-pointer"
           >
@@ -214,15 +120,18 @@ export default {
                   fill-rule="evenodd"
                   d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
                   clip-rule="evenodd"
-                ></path></svg
-              >Удалить
+                ></path>
+              </svg>
+              > Удалить
             </button>
           </div>
         </dl>
         <hr class="w-full border-t border-gray-600 my-4" />
       </template>
-      <section v-if="sel" class="relative">
-        <h3 class="text-lg leading-6 font-medium text-gray-900 my-8">{{ sel.name }} - USD</h3>
+      <section v-if="selectedTickers" class="relative">
+        <h3 class="text-lg leading-6 font-medium text-gray-900 my-8">
+          {{ selectedTickers.name }} - USD
+        </h3>
         <div class="flex items-end border-gray-600 border-b border-l h-64">
           <div
             v-for="(bar, idx) in normalizeGraph()"
@@ -231,7 +140,7 @@ export default {
             class="bg-purple-800 border w-10"
           ></div>
         </div>
-        <button @click="sel = null" type="button" class="absolute top-0 right-0">
+        <button @click="selectedTickers = null" type="button" class="absolute top-0 right-0">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             xmlns:xlink="http://www.w3.org/1999/xlink"
