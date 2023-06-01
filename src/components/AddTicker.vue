@@ -1,68 +1,70 @@
 <script>
-import AddButton from './AddButton.vue'
+import AddButton from "./AddButton.vue";
 
 export default {
-  name: 'App',
+  name: "AddButton",
   components: {
-    AddButton
+    AddButton,
   },
   emits: {
-    addTicker: String
+    addTicker: String,
   },
   props: {
     coinsList: Array,
-    isAlreadyAdd: Boolean
+    isAlreadyAdd: Boolean,
   },
   data() {
     return {
-      ticker: '',
+      ticker: "",
       clues: [],
-      isEditing: false
-    }
+      isEditing: false,
+    };
   },
   methods: {
     addTicker() {
-      this.$emit('addTicker', this.ticker)
-      this.ticker = ''
-      this.isEditing = false
+      this.$emit("addTicker", this.ticker);
+      this.ticker = "";
+      this.isEditing = false;
     },
 
     changeText() {
-      this.isEditing = true
-      this.clues = []
-      this.ticker = this.ticker.toUpperCase()
-      if (this.ticker.length < 2) return
-      const ticker = this.ticker
+      this.isEditing = true;
+      this.clues = [];
+      this.ticker = this.ticker.toUpperCase();
+      if (this.ticker.length < 2) return;
+      const ticker = this.ticker;
       this.coinsList.forEach((item) => {
         if (item?.symbol.startsWith(ticker)) {
-          this.clues.push(item?.symbol)
-          return
+          this.clues.push(item?.symbol);
+          return;
         }
         if (item?.fullName.startsWith(ticker)) {
-          this.clues.push(item?.symbol)
-          return
+          this.clues.push(item?.symbol);
+          return;
         }
-      })
-      this.clues.sort()
+      });
+      this.clues.sort();
       if (this.clues.length > 4) {
-        this.clues.length = 4
+        this.clues.length = 4;
       }
-      return
+      return;
     },
 
     choseClue(ticker) {
-      this.clues = []
-      this.ticker = ticker
-      this.addTicker()
-    }
-  }
-}
+      this.clues = [];
+      this.ticker = ticker;
+      this.addTicker();
+    },
+  },
+};
 </script>
 <template>
   <section>
     <div class="flex">
       <div class="max-w-xs">
-        <label for="wallet" class="block text-m font-medium text-gray-700 mb-3">Тикер</label>
+        <label for="wallet" class="block text-m font-medium text-gray-700 mb-3"
+          >Тикер</label
+        >
         <div class="mt-1 relative rounded-md shadow-md">
           <input
             v-model.trim="ticker"
