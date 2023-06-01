@@ -2,16 +2,16 @@
 import AddButton from "./AddButton.vue";
 
 export default {
-  name: "AddButton",
+  // name: "AddButton",
   components: {
     AddButton,
   },
   emits: {
-    addTicker: String,
+    add: String,
   },
   props: {
     coinsList: Array,
-    isAlreadyAdd: Boolean,
+    isAdded: Boolean,
   },
   data() {
     return {
@@ -22,7 +22,7 @@ export default {
   },
   methods: {
     addTicker() {
-      this.$emit("addTicker", this.ticker);
+      this.$emit("add", this.ticker);
       this.ticker = "";
       this.isEditing = false;
     },
@@ -90,11 +90,11 @@ export default {
             </span>
           </div>
         </template>
-        <div class="text-sm text-red-600" v-if="isAlreadyAdd && !isEditing">
+        <div class="text-sm text-red-600" v-if="isAdded && !isEditing">
           Такой тикер уже добавлен
         </div>
       </div>
     </div>
-    <AddButton @click="addTicker" />
+    <AddButton @click="addTicker" class="my-4" />
   </section>
 </template>
