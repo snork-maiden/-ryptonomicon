@@ -8,9 +8,9 @@ export default {
   },
   emits: {
     add: String,
+    downloaded: null
   },
   props: {
-    coinsList: Array,
     isAdded: Boolean,
   },
   data() {
@@ -18,6 +18,7 @@ export default {
       ticker: "",
       clues: [],
       isEditing: false,
+      coinsList: []
     };
   },
   methods: {
@@ -55,6 +56,29 @@ export default {
       this.ticker = ticker;
       this.addTicker();
     },
+    async getCoinsList() {
+      let response = await fetch(
+        "https://min-api.cryptocompare.com/data/all/coinlist?summary=true"
+      );
+
+      if (response.ok) {
+        const responseJSON = await response.json();
+        const data = await responseJSON.Data;
+        for (const key in data) {
+          const coin = {
+            symbol: data[key]?.Symbol,
+            fullName: data[key]?.FullName,
+          };
+          this.coinsList.push(coin);
+        }
+      } else {
+        console.error("HTTP error: " + response.status);
+      }
+      this.$emit('downloaded')
+    },
+  },
+  mounted() {
+    this.getCoinsList();
   },
 };
 </script>
