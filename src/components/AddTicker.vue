@@ -97,7 +97,7 @@ export default {
             type="text"
             name="wallet"
             id="wallet"
-            class="block w-full p-2 pr-10 border-gray-300 text-gray-900 focus:outline-none focus:ring focus:ring-blue-400 focus:border-gray-400 sm:text-sm rounded-md"
+            class="block w-full p-2 pr-10 border-gray-300 text-gray-900 focus:outline-yellow-500 sm:text-sm rounded-md"
             placeholder="Например, DOGE"
             autocomplete="off"
           />
