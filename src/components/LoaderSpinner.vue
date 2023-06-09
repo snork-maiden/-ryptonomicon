@@ -1,6 +1,6 @@
 <template>
   <div
-    class="fixed w-100 h-100 opacity-80 bg-purple-800 inset-0 z-50 flex items-center justify-center"
+    class="fixed w-100 h-100 opacity-80 bg-lime-600 inset-0 z-50 flex items-center justify-center"
   >
     <svg
       class="animate-spin -ml-1 mr-3 h-12 w-12 text-white"

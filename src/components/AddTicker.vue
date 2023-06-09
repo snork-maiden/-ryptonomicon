@@ -8,7 +8,7 @@ export default {
   },
   emits: {
     add: String,
-    downloaded: null
+    downloaded: null,
   },
   props: {
     isAdded: Boolean,
@@ -18,18 +18,26 @@ export default {
       ticker: "",
       clues: [],
       isEditing: false,
-      coinsList: []
+      coinsList: [],
+      isDisabled: true,
     };
   },
   methods: {
     addTicker() {
       this.$emit("add", this.ticker);
-      this.ticker = "";
+      if (!this.isAdded) {
+        this.ticker = "";
+      }
       this.isEditing = false;
+      return;
     },
 
     changeText() {
-      this.isEditing = true;
+      if (!this.ticker) {
+        this.isDisabled = true;
+        return;
+      }
+      this.isDisabled = false;
       this.clues = [];
       this.ticker = this.ticker.toUpperCase();
       if (this.ticker.length < 2) return;
@@ -74,7 +82,7 @@ export default {
       } else {
         console.error("HTTP error: " + response.status);
       }
-      this.$emit('downloaded')
+      this.$emit("downloaded");
     },
   },
   mounted() {
@@ -94,6 +102,7 @@ export default {
             v-model.trim="ticker"
             @input="changeText"
             @keydown.enter="addTicker"
+            @focusin="isEditing = true"
             type="text"
             name="wallet"
             id="wallet"
@@ -119,6 +128,6 @@ export default {
         </div>
       </div>
     </div>
-    <AddButton @click="addTicker" class="my-4" />
+    <AddButton @click="addTicker" :disabled="isDisabled" class="my-4" />
   </section>
 </template>
