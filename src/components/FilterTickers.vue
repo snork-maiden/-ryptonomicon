@@ -11,15 +11,16 @@ export default {
       filter: "",
       page: 1,
       filteredTickers: this.tickers,
+      tickersPerPage: 6,
     };
   },
   computed: {
     startIndex() {
-      return (this.page - 1) * 6;
+      return (this.page - 1) * this.tickersPerPage;
     },
 
     endIndex() {
-      return this.page * 6;
+      return this.page * this.tickersPerPage;
     },
 
     hasNextPage() {
@@ -28,11 +29,15 @@ export default {
     paginatedTickers() {
       return this.filteredTickers.slice(this.startIndex, this.endIndex);
     },
+    pageStateOptions() {
+      return {
+        filter: this.filter.toLowerCase(),
+        page: this.page,
+      };
+    },
   },
   methods: {
     getFilteredList() {
-      this.filter = this.filter.toUpperCase();
-
       this.filteredTickers = this.tickers.filter((ticker) =>
         ticker.name.includes(this.filter)
       );
@@ -44,14 +49,35 @@ export default {
       this.getFilteredList();
     },
     filter() {
+      this.filter = this.filter.toUpperCase();
       this.page = 1;
       this.getFilteredList();
     },
     page() {
       this.$emit("filterTickers", this.paginatedTickers);
     },
+    pageStateOptions(parameters) {
+      let url = new URL(location);
+      for (let item in parameters) {
+        url.searchParams.set(item, parameters[item].toString());
+      }
+      console.log(url, parameters);
+      window.history.pushState(null, document.title, url);
+    },
   },
   created() {
+    const windowData = Object.fromEntries(
+      new URL(window.location).searchParams.entries()
+    );
+
+    const VALID_KEYS = ["filter", "page"];
+
+    VALID_KEYS.forEach((key) => {
+      if (windowData[key]) {
+        this[key] = windowData[key];
+      }
+    });
+
     this.$emit("filterTickers", this.paginatedTickers);
   },
 };
