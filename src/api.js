@@ -69,7 +69,6 @@ export async function getCoinsList() {
   let response = await fetch(
     "https://min-api.cryptocompare.com/data/all/coinlist?summary=true"
   );
-  console.log(coinsList)
 
   if (response.ok) {
     const responseJSON = await response.json();

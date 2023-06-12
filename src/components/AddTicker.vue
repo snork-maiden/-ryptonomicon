@@ -18,12 +18,35 @@ export default {
     return {
       ticker: "",
 
-      clues: [],
+      // clues: [],
       coinsList: [],
 
       isEditing: false,
       isDisabled: true,
     };
+  },
+  computed: {
+    clues() {
+      let clues = [];
+
+      if (!this.ticker) return [];
+
+      this.coinsList.forEach((item) => {
+        if (item?.symbol.startsWith(this.ticker)) {
+          clues.push(item?.symbol);
+          return;
+        }
+        if (item?.fullName.startsWith(this.ticker)) {
+          clues.push(item?.symbol);
+          return;
+        }
+      });
+      clues.sort();
+      if (clues.length > 4) {
+        clues.length = 4;
+      }
+      return clues;
+    },
   },
   methods: {
     addTicker() {
@@ -36,33 +59,15 @@ export default {
     },
 
     changeText() {
-      this.clues = [];
       if (!this.ticker) {
         this.isDisabled = true;
         return;
       }
       this.isDisabled = false;
       this.ticker = this.ticker.toUpperCase();
-      const ticker = this.ticker;
-      this.coinsList.forEach((item) => {
-        if (item?.symbol.startsWith(ticker)) {
-          this.clues.push(item?.symbol);
-          return;
-        }
-        if (item?.fullName.startsWith(ticker)) {
-          this.clues.push(item?.symbol);
-          return;
-        }
-      });
-      this.clues.sort();
-      if (this.clues.length > 4) {
-        this.clues.length = 4;
-      }
-      return;
     },
 
     choseClue(ticker) {
-      this.clues = [];
       this.ticker = ticker;
       this.addTicker();
     },

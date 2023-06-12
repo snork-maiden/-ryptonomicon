@@ -10,7 +10,7 @@ export default {
     return {
       filter: "",
       filteredTickers: this.tickers,
-      
+
       page: 1,
       tickersPerPage: 6,
     };
@@ -62,7 +62,6 @@ export default {
       for (let item in parameters) {
         url.searchParams.set(item, parameters[item].toString());
       }
-      console.log(url, parameters);
       window.history.pushState(null, document.title, url);
     },
   },
