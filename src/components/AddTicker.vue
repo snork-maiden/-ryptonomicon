@@ -1,4 +1,5 @@
 <script>
+import { getCoinsList } from "../api";
 import AddButton from "./AddButton.vue";
 
 export default {
@@ -16,9 +17,11 @@ export default {
   data() {
     return {
       ticker: "",
+
       clues: [],
-      isEditing: false,
       coinsList: [],
+
+      isEditing: false,
       isDisabled: true,
     };
   },
@@ -33,14 +36,13 @@ export default {
     },
 
     changeText() {
+      this.clues = [];
       if (!this.ticker) {
         this.isDisabled = true;
         return;
       }
       this.isDisabled = false;
-      this.clues = [];
       this.ticker = this.ticker.toUpperCase();
-      if (this.ticker.length < 2) return;
       const ticker = this.ticker;
       this.coinsList.forEach((item) => {
         if (item?.symbol.startsWith(ticker)) {
@@ -64,29 +66,12 @@ export default {
       this.ticker = ticker;
       this.addTicker();
     },
-    async getCoinsList() {
-      let response = await fetch(
-        "https://min-api.cryptocompare.com/data/all/coinlist?summary=true"
-      );
-
-      if (response.ok) {
-        const responseJSON = await response.json();
-        const data = await responseJSON.Data;
-        for (const key in data) {
-          const coin = {
-            symbol: data[key]?.Symbol,
-            fullName: data[key]?.FullName,
-          };
-          this.coinsList.push(coin);
-        }
-      } else {
-        console.error("HTTP error: " + response.status);
-      }
-      this.$emit("downloaded");
-    },
   },
   mounted() {
-    this.getCoinsList();
+    getCoinsList().then((data) => {
+      this.coinsList = data;
+      this.$emit("downloaded");
+    });
   },
 };
 </script>

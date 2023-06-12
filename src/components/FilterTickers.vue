@@ -9,8 +9,9 @@ export default {
   data() {
     return {
       filter: "",
-      page: 1,
       filteredTickers: this.tickers,
+      
+      page: 1,
       tickersPerPage: 6,
     };
   },
