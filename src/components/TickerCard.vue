@@ -1,13 +1,11 @@
 <script>
 export default {
-  // name: "AddButton",
   emits: {
     delete: null,
   },
   props: {
     ticker: Object,
   },
-  methods: {},
 };
 </script>
 <template>

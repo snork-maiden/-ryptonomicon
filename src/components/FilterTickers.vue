@@ -45,6 +45,7 @@ export default {
       this.$emit("filterTickers", this.paginatedTickers);
     },
   },
+
   watch: {
     tickers() {
       this.getFilteredList();
@@ -64,7 +65,11 @@ export default {
       }
       window.history.pushState(null, document.title, url);
     },
+    paginatedTickers() {
+      if (this.paginatedTickers.length === 0 && this.page > 1) this.page -= 1;
+    },
   },
+
   created() {
     const windowData = Object.fromEntries(
       new URL(window.location).searchParams.entries()

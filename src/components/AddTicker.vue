@@ -41,6 +41,7 @@ export default {
           return;
         }
       });
+
       clues.sort();
       if (clues.length > 4) {
         clues.length = 4;
@@ -58,15 +59,6 @@ export default {
       return;
     },
 
-    changeText() {
-      if (!this.ticker) {
-        this.isDisabled = true;
-        return;
-      }
-      this.isDisabled = false;
-      this.ticker = this.ticker.toUpperCase();
-    },
-
     choseClue(ticker) {
       this.ticker = ticker;
       this.addTicker();
@@ -77,6 +69,16 @@ export default {
       this.coinsList = data;
       this.$emit("downloaded");
     });
+  },
+  watch: {
+    ticker() {
+      if (!this.ticker) {
+        this.isDisabled = true;
+        return;
+      }
+      this.isDisabled = false;
+      this.ticker = this.ticker.toUpperCase();
+    },
   },
 };
 </script>
@@ -90,7 +92,6 @@ export default {
         <div class="mt-1 relative rounded-md shadow-md">
           <input
             v-model.trim="ticker"
-            @input="changeText"
             @keydown.enter="addTicker"
             @focusin="isEditing = true"
             type="text"

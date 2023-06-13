@@ -8,18 +8,15 @@ export default {
   },
   props: {
     selectedTicker: Object,
+    graph: Array
   },
   emits: {
     clearTicker: null,
   },
-  data() {
-    return {
-      graph: [],
-    };
-  },
+
   methods: {},
   computed: {
-    normalizeGraph() {
+    normalizedGraph() {
       const maxValue = Math.max(...this.graph);
       const minValue = Math.min(...this.graph);
 
@@ -39,10 +36,10 @@ export default {
     </h3>
     <div class="flex items-end border-gray-600 border-b border-l h-64">
       <div
-        v-for="(bar, idx) in normalizeGraph"
+        v-for="(bar, idx) in normalizedGraph"
         :key="idx"
         :style="{ height: `${bar}%` }"
-        class="bg-purple-800 border w-10"
+        class="bg-purple-800 border w-8"
       ></div>
     </div>
     <ClearButton @click="clearTicker" class="absolute"> </ClearButton>
