@@ -4,7 +4,7 @@ import LoaderSpinner from "./components/LoaderSpinner.vue";
 import TickerGraph from "./components/TickerGraph.vue";
 import TickerCard from "./components/TickerCard.vue";
 import FilterTickers from "./components/FilterTickers.vue";
-import { subscribeToTicker, unsubscribeFromTicker } from "./api.js";
+import { subscribeToTicker, unsubscribeFromTicker } from "./api/webSocketCryprtocompare";
 
 export default {
   name: "App",

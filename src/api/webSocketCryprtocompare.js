@@ -1,3 +1,5 @@
+import { subscribeToTickerOnHTTP } from "./HTTPCryprtocompare ";
+
 const API_KEY =
   "380ec498044c900f249ad39326e8320a2cb4ee09b94afe4dff6911e37ef56bfc";
 
@@ -13,7 +15,12 @@ socket.addEventListener("message", (e) => {
     TYPE: type,
     FROMSYMBOL: currency,
     PRICE: newPrice,
+    MESSAGE: message,
+    PARAMETER: parameterString,
   } = JSON.parse(e.data);
+  if (message === "INVALID_SUB") {
+    subscribeToTickerOnHTTP(parameterString);
+  }
   if (type !== AGGREGATE_INDEX || newPrice === undefined) {
     return;
   }
@@ -63,27 +70,3 @@ export const unsubscribeFromTicker = (ticker) => {
   tickersHandlers.delete(ticker);
   unsubscribeFromTickerOnWs(ticker);
 };
-
-export async function getCoinsList() {
-  let coinsList = [];
-  let response = await fetch(
-    "https://min-api.cryptocompare.com/data/all/coinlist?summary=true"
-  );
-
-  if (response.ok) {
-    const responseJSON = await response.json();
-    const data = await responseJSON.Data;
-
-    for (const key in data) {
-      const coin = {
-        symbol: data[key]?.Symbol,
-        fullName: data[key]?.FullName,
-      };
-      coinsList.push(coin);
-    }
-    return coinsList;
-  } else {
-    console.error("HTTP error: " + response.status);
-    return null;
-  }
-}

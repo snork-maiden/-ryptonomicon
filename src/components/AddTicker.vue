@@ -1,5 +1,5 @@
 <script>
-import { getCoinsList } from "../api";
+import  getCoinsList from "../api/getCoinsList";
 import AddButton from "./AddButton.vue";
 
 export default {
