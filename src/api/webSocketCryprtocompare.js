@@ -3,7 +3,7 @@ import { subscribeToTickerOnHTTP } from "./HTTPCryprtocompare ";
 const API_KEY =
   "380ec498044c900f249ad39326e8320a2cb4ee09b94afe4dff6911e37ef56bfc";
 
-const tickersHandlers = new Map(); // {}
+const tickersHandlers = new Map(); 
 const socket = new WebSocket(
   `wss://streamer.cryptocompare.com/v2?api_key=${API_KEY}`
 );
@@ -19,7 +19,9 @@ socket.addEventListener("message", (e) => {
     PARAMETER: parameterString,
   } = JSON.parse(e.data);
   if (message === "INVALID_SUB") {
-    subscribeToTickerOnHTTP(parameterString);
+    const parameters = parameterString.split("~");
+    let fromCurrency = parameters[2];
+    subscribeToTickerOnHTTP(fromCurrency, tickersHandlers.get(fromCurrency) ?? []);
   }
   if (type !== AGGREGATE_INDEX || newPrice === undefined) {
     return;

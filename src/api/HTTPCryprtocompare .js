@@ -1,30 +1,31 @@
 let HTTPTickerNames = [];
 let tickerUpdateInterval = null;
+const tickersHandlers = new Map();
 
-export function subscribeToTickerOnHTTP(parameterString) {
-  const tickerName = getTickerName(parameterString);
-
+export function subscribeToTickerOnHTTP(tickerName, handlers) {
   HTTPTickerNames.push(tickerName);
+  tickersHandlers.set(tickerName, handlers);
   if (HTTPTickerNames.length > 1) return;
-
   subscribeToTickers();
-
-  function getTickerName(parameterString) {
-    const parameters = parameterString.split("~");
-    let fromCurrency = parameters[2];
-    return fromCurrency;
-  }
 }
 
 function subscribeToTickers() {
   const url = new URL("https://min-api.cryptocompare.com/data/pricemulti");
+  url.searchParams.set("tsyms", "USD");
   updateTickers();
   tickerUpdateInterval = setInterval(updateTickers, 5000);
-  url.searchParams.set("tsyms", "USD");
   function updateTickers() {
-    console.log(HTTPTickerNames.join(","));
     url.searchParams.set("fsyms", HTTPTickerNames.join(","));
-    fetch(url).then((data) => console.log(data.json()));
+    fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        // console.log(tickersHandlers, data);
+        tickersHandlers.forEach((handlers, currency) => {
+          console.log(currency, handlers);
+          handlers.forEach((fn) => fn(data[currency].USD));
+        });
+      });
+    // handlers.forEach((fn) => fn(newPrice));
   }
 }
 
@@ -33,4 +34,3 @@ export function unsubscribeFromTickerOnHTTP(tickerName) {
   if (HTTPTickerNames.length > 0) return;
   clearInterval(tickerUpdateInterval);
 }
-
