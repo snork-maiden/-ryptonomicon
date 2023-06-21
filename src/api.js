@@ -5,22 +5,64 @@ const tickersHandlers = new Map(); // {}
 const socket = new WebSocket(
   `wss://streamer.cryptocompare.com/v2?api_key=${API_KEY}`
 );
+// [ ] Если нет курса к доллару, проверять, есть ли курс к BTC и делать через BTC|  Критичность: 4
 
 const AGGREGATE_INDEX = "5";
+let isBTCsubscription = false;
+let BTCcourse = null;
 
 socket.addEventListener("message", (e) => {
-  const {
+  let {
     TYPE: type,
     FROMSYMBOL: currency,
+    TOSYMBOL: fromCurrency,
     PRICE: newPrice,
+    PARAMETER: parameterString,
+    MESSAGE: message,
   } = JSON.parse(e.data);
+
+  if (message === "INVALID_SUB") {
+    subscribeToBTC(parameterString);
+    return null;
+  }
+
   if (type !== AGGREGATE_INDEX || newPrice === undefined) {
-    return;
+    return null;
+  }
+
+  if (fromCurrency === "BTC") {
+    newPrice = BTCtoUSD(newPrice);
+    console.log(currency, newPrice);
+  }
+
+  if (currency === "BTC") {
+    BTCcourse = newPrice;
   }
 
   const handlers = tickersHandlers.get(currency) ?? [];
   handlers.forEach((fn) => fn(newPrice));
+
+  function subscribeToBTC(parameterString) {
+    const parameters = parameterString.split("~");
+    let fromCurrency = parameters[2];
+    let toCurrency = parameters[3];
+
+    if (toCurrency === "BTC") return;
+    unsubscribeFromTicker(fromCurrency);
+    // subscribeToTicker(
+    //   fromCurrency,
+    //   "BTC",
+    //   (newPrice) => (BTCcourse = newPrice)
+    // );
+  }
 });
+
+function BTCtoUSD(price) {
+  if (!isBTCsubscription) {
+    subscribeToTicker("BTC", "USD", (newPrice) => newPrice);
+  }
+  return price * BTCcourse;
+}
 
 function sendToWebSocket(message) {
   const stringifiedMessage = JSON.stringify(message);
@@ -39,24 +81,39 @@ function sendToWebSocket(message) {
   );
 }
 
-function subscribeToTickerOnWs(ticker) {
-  sendToWebSocket({
-    action: "SubAdd",
-    subs: [`5~CCCAGG~${ticker}~USD`],
-  });
+function subscribeToTickerOnWs(ticker, currency) {
+  if (ticker === "BTC") {
+    isBTCsubscription = true;
+  }
+  webSocketAction(ticker, "SubAdd", currency);
 }
 
 function unsubscribeFromTickerOnWs(ticker) {
+  if (ticker === "BTC") {
+    isBTCsubscription = false;
+  }
+  webSocketAction(ticker, "SubRemove", "USD");
+  webSocketAction(ticker, "SubRemove", "BTC");
+}
+
+function webSocketAction(ticker, action, currency) {
   sendToWebSocket({
-    action: "SubRemove",
-    subs: [`5~CCCAGG~${ticker}~USD`],
+    action,
+    subs: [`5~CCCAGG~${ticker}~${currency}`],
   });
 }
 
-export const subscribeToTicker = (ticker, cb) => {
+const subscribeToTicker = (ticker, currency, cb) => {
   const subscribers = tickersHandlers.get(ticker) || [];
   tickersHandlers.set(ticker, [...subscribers, cb]);
-  subscribeToTickerOnWs(ticker);
+  subscribeToTickerOnWs(ticker, currency);
+};
+
+export const subscribeToTickerUSD = (ticker, cb) => {
+  subscribeToTicker(ticker, "USD", cb);
+};
+export const subscribeToTickerBTC = (ticker, cb) => {
+  subscribeToTicker(ticker, "BTC", cb);
 };
 
 export const unsubscribeFromTicker = (ticker) => {
@@ -81,6 +138,7 @@ export async function getCoinsList() {
       };
       coinsList.push(coin);
     }
+
     return coinsList;
   } else {
     console.error("HTTP error: " + response.status);
