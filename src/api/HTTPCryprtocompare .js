@@ -19,13 +19,15 @@ function subscribeToTickers() {
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
-        // console.log(tickersHandlers, data);
         tickersHandlers.forEach((handlers, currency) => {
-          console.log(currency, handlers);
-          handlers.forEach((fn) => fn(data[currency].USD));
+          let newPrice = data[currency]?.USD;
+          if (newPrice === "-") {
+            newPrice = null;
+          }
+          handlers.forEach((fn) => fn(data[currency]?.USD));
         });
-      });
-    // handlers.forEach((fn) => fn(newPrice));
+      })
+      .catch((err) => console.error(err));
   }
 }
 

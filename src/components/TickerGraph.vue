@@ -55,14 +55,14 @@ export default {
       {{ selectedTicker.name }} - USD
     </h3>
     <div
-      class="flex items-end border-gray-600 border-b border-l h-64"
+      class="flex items-end border-gray-600 border-b-2 border-l-2 h-64"
       ref="graph"
     >
       <div
         v-for="(bar, idx) in normalizeGraph(graph)"
         :key="idx"
         :style="{ height: `${bar}%` }"
-        class="bg-purple-800 border w-8"
+        class="bg-lime-700 border w-8"
       ></div>
     </div>
   </section>

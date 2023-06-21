@@ -1,6 +1,6 @@
 <template>
   <button
-    class="flex items-center justify-center font-medium w-full bg-lime-700 px-4 py-4 sm:px-6 text-md text-lime-100 hover:opacity-90 transition-all focus:outline-yellow-500"
+    class="flex items-center justify-center font-medium w-full bg-lime-700 px-4 py-4 sm:px-6 text-md text-lime-100 hover:opacity-90 transition focus:outline-yellow-500 "
   >
     <svg
       xmlns="http://www.w3.org/2000/svg"

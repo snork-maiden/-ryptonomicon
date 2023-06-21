@@ -11,20 +11,34 @@ export default {
   props: {
     ticker: Object,
   },
+  data() {
+    return {
+      isLoading: true,
+    }
+  },
   methods: {
     formatPrice(price) {
-      if (!price) return "-";
-      // return price;
+      if (!this.isPrice) return "-";
       return price > 1 ? price.toFixed(2) : price.toPrecision(2);
     },
   },
+  computed: {
+    isPrice() {
+      return this.ticker.price && this.ticker.price !== "-";
+    },
+  },
+  mounted() {
+    setTimeout(() => {
+      this.isLoading = false
+    }, 10000)
+  }
 };
 </script>
 <template>
   <div
     class="bg-white overflow-hidden shadow rounded-lg outline-yellow-500 outline-offset-1 outline-4 cursor-pointer"
     :class="{
-      'shadow-red-400': !ticker.price,
+      'shadow-red-400': !isPrice && !isLoading,
     }"
   >
     <div class="px-4 py-5 sm:p-6 text-center">
@@ -39,7 +53,8 @@ export default {
     <DeleteButton
       @click.stop="$emit('delete')"
       :class="{
-        'bg-red-800': !ticker.price,
+        'bg-red-800': !isPrice && !isLoading,
+        'bg-yellow-700': !isPrice && isLoading,
       }"
     />
   </div>
