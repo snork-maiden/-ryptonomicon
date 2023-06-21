@@ -14,7 +14,7 @@ export default {
   :disabled="disabled"
     @click="$emit('click')"
     type="button"
-    class="inline-flex items-center py-2 px-4 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-full text-white bg-lime-700 hover:bg-lime-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-yellow-500 disabled:saturate-0"
+    class="inline-flex items-center py-2 px-6 shadow-sm text-sm leading-4 font-medium rounded-full text-white bg-lime-700 hover:bg-lime-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-yellow-500 disabled:saturate-0"
   >
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -26,6 +26,6 @@ export default {
         d="M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16z"
       />
     </svg>
-    Добавить
+    Add
   </button>
 </template>

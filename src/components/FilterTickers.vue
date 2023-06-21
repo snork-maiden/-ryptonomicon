@@ -88,26 +88,26 @@ export default {
 };
 </script>
 <template>
-  <div>
+  <div class="mb-10">
     <template v-if="hasNextPage || page > 1">
       <button
         class="my-4 mx-2 inline-flex items-center py-2 px-4 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-full text-white bg-gray-600 hover:bg-gray-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
         :disabled="page === 1"
         @click="page -= 1"
       >
-        Назад
+        Back
       </button>
       <button
         class="my-4 mx-2 inline-flex items-center py-2 px-4 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-full text-white bg-gray-600 hover:bg-gray-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
         @click="page += 1"
         :disabled="!hasNextPage"
       >
-        Вперед
+        Forward
       </button>
     </template>
-    <div>
-      Фильтр:
+    <label class="text-lg font-normal">
+      Search:
       <input v-model="filter" class="p-1 ml-2 focus:outline-yellow-500" />
-    </div>
+    </label>
   </div>
 </template>

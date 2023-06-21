@@ -87,7 +87,7 @@ export default {
     <div class="flex">
       <div class="max-w-xs">
         <label for="wallet" class="block text-m font-medium text-gray-700 mb-3"
-          >Тикер</label
+          >Ticker</label
         >
         <div class="mt-1 relative rounded-md shadow-md">
           <input
@@ -98,7 +98,7 @@ export default {
             name="wallet"
             id="wallet"
             class="block w-full p-2 pr-10 border-gray-300 text-gray-900 focus:outline-yellow-500 sm:text-sm rounded-md"
-            placeholder="Например, DOGE"
+            placeholder="For example, DOGE"
             autocomplete="off"
           />
         </div>
@@ -107,7 +107,7 @@ export default {
             <span
               v-for="clue of clues"
               v-bind:key="clue"
-              class="inline-flex items-center px-2 m-1 rounded-md text-xs font-medium bg-gray-300 text-gray-800 cursor-pointer"
+              class="inline-flex items-center px-3 py-1 m-1 rounded-md text-xs font-medium bg-gray-300 text-gray-800 cursor-pointer"
               @click="choseClue(clue)"
             >
               {{ clue }}
@@ -115,7 +115,7 @@ export default {
           </div>
         </template>
         <div class="text-sm text-red-600" v-if="isAdded && !isEditing">
-          Такой тикер уже добавлен
+          This ticker is already added
         </div>
       </div>
     </div>
