@@ -1,6 +1,5 @@
 <script>
 export default {
-  name: "TickerGraph",
   props: {
     selectedTicker: Object,
     graph: Array,

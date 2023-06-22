@@ -14,7 +14,7 @@ export default {
   data() {
     return {
       isLoading: true,
-    }
+    };
   },
   methods: {
     formatPrice(price) {
@@ -29,9 +29,9 @@ export default {
   },
   mounted() {
     setTimeout(() => {
-      this.isLoading = false
-    }, 10000)
-  }
+      this.isLoading = false;
+    }, 10000);
+  },
 };
 </script>
 <template>

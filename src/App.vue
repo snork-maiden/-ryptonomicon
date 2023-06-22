@@ -31,10 +31,6 @@ export default {
     };
   },
 
-  // [ ] 9. localStorage и анонимные вкладки | Критичность: 3
-
-  // [ ] 10. Магические строки и числа (URL, 5000 миллисекунд задержки, ключ локал стораджа, количество на странице) |  Критичность: 1
-
   created() {
     const tickersData = localStorage.getItem("cryptonomicon-list");
     if (tickersData) {
@@ -93,7 +89,6 @@ export default {
   watch: {
     selectedTicker() {
       this.graph = [];
-      // this.$nextTick().then(this.calculateMaxGraphElements);
     },
 
     tickers() {

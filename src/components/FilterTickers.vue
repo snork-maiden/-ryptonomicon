@@ -107,7 +107,10 @@ export default {
     </template>
     <label class="text-lg font-normal mr-10">
       Search:
-      <input v-model="filter" class="p-2 border-gray-300 text-gray-900 focus:outline-yellow-500 sm:text-sm rounded-md shadow-md" />
+      <input
+        v-model="filter"
+        class="p-2 border-gray-300 text-gray-900 focus:outline-yellow-500 sm:text-sm rounded-md shadow-md"
+      />
     </label>
   </div>
 </template>

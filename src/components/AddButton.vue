@@ -1,5 +1,4 @@
 <script>
-
 export default {
   props: {
     disabled: Boolean,
@@ -11,7 +10,7 @@ export default {
 </script>
 <template>
   <button
-  :disabled="disabled"
+    :disabled="disabled"
     @click="$emit('click')"
     type="button"
     class="inline-flex items-center py-2 px-6 shadow-sm text-sm leading-4 font-medium rounded-full text-white bg-lime-700 hover:bg-lime-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-yellow-500 disabled:saturate-0"

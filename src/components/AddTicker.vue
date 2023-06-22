@@ -1,9 +1,8 @@
 <script>
-import  getCoinsList from "../api/getCoinsList";
+import getCoinsList from "../api/getCoinsList";
 import AddButton from "./AddButton.vue";
 
 export default {
-  // name: "AddButton",
   components: {
     AddButton,
   },
@@ -18,7 +17,6 @@ export default {
     return {
       ticker: "",
 
-      // clues: [],
       coinsList: [],
 
       isEditing: false,
