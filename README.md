@@ -1,35 +1,40 @@
-#  cryptonomicon
+# Cryptonomicon 
 
-This template should help get you started developing with Vue 3 in Vite.
+Cryptonomicon is a real-time web-based application to monitor the latest prices of various cryptocurrencies.
 
-## Recommended IDE Setup
+## Key Features
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+- **Real-time tracking:** Track the live courses of various cryptocurrencies. The data is obtained through WebSockets, HTTP is used as a backup method for fetching data.
+- **User Preferences:** Users can select specific cryptocurrencies to track. Chosen filters will be saved in the URL,  chosen currencies will be saved to Local storage.
+- **Graphical Representation**  of selected cryptocurrency cource.
+- **Clickable Clues** with cryptocurrency names are available for quick reference.
+- **Pagination**
+- **Form Validation:** Secure and reliable data input is maintained through form validation.
 
-## Customize configuration
+## Tech Stack
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+- Vue 3 (Options API)
+- Vite
+- Tailwind CSS
 
-## Project Setup
+## Installation
 
-```sh
-npm install
-```
+1. Install the required dependencies:
 
-### Compile and Hot-Reload for Development
+    ```bash
+    npm install
+    ```
 
-```sh
-npm run dev
-```
+2. Run the project:
 
-### Compile and Minify for Production
+    ```bash
+    npm run dev
+    ```
 
-```sh
-npm run build
-```
+3. Compile and minify for production
 
-### Lint with [ESLint](https://eslint.org/)
+    ```bash
+    npm run build
+    ```
 
-```sh
-npm run lint
-```
+Enjoy tracking your favourite cryptocurrencies with Cryptonomicon!
