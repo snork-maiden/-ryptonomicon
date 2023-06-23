@@ -1,5 +1,5 @@
 import { API_KEY } from "../../TOKEN";
-import { subscribeToTickerOnHTTP } from "./HTTPCryprtocompare ";
+import { subscribeToTickerOnHTTP } from "./HTTPCryprtocompare";
 
 const tickersHandlers = new Map();
 const url = new URL("wss://streamer.cryptocompare.com/v2");
